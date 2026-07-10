@@ -1,4 +1,3 @@
-alert("Mission 180 Loaded");
 const STORAGE_KEY = "mission180_milestones_v2";
 
 const rewards = {

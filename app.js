@@ -823,3 +823,220 @@ function render(){
  <button
  class="small-btn delete"
  data-delete="${item.id}">
+
+Delete
+
+ </button>
+
+
+ </div>
+
+
+
+ </article>
+
+
+ `).join("");
+
+
+
+
+
+
+
+ document
+ .querySelectorAll("[data-complete]")
+ .forEach(btn=>{
+
+
+ btn.onclick=()=>{
+
+ completeMilestone(
+ btn.dataset.complete
+ );
+
+ };
+
+
+ });
+
+
+
+
+
+ document
+ .querySelectorAll("[data-delete]")
+ .forEach(btn=>{
+
+
+ btn.onclick=()=>{
+
+
+ deleteMilestone(
+ btn.dataset.delete
+ );
+
+
+ };
+
+
+ });
+
+
+
+}
+
+
+
+
+
+
+function startTimer(){
+
+ checkExpired();
+
+
+ setInterval(
+ checkExpired,
+ 60000
+ );
+
+
+}
+el.openAddBtn.addEventListener(
+"click",
+openModal
+);
+
+
+el.closeAddBtn.addEventListener(
+"click",
+closeModal
+);
+
+
+
+el.modalBackdrop.addEventListener(
+"click",
+closeModal
+);
+
+
+
+el.popupBackdrop.addEventListener(
+"click",
+closePopup
+);
+
+
+
+el.rewardOkBtn.addEventListener(
+"click",
+closePopup
+);
+
+
+
+el.punishOkBtn.addEventListener(
+"click",
+closePopup
+);
+
+
+
+
+el.saveBtn.addEventListener(
+"click",
+addMilestone
+);
+
+
+
+
+
+el.backBtn.addEventListener(
+"click",
+()=>{
+
+
+ el.stepForm.classList.add("hidden");
+
+
+ el.stepChoose.classList.remove("hidden");
+
+
+}
+
+);
+
+
+
+
+
+
+
+document
+.querySelectorAll(".choose-btn")
+.forEach(btn=>{
+
+
+ btn.addEventListener(
+ "click",
+ ()=>{
+
+
+ setCategory(
+ btn.dataset.category
+ );
+
+
+ }
+
+ );
+
+
+});
+
+el.tabs.forEach(tab=>{
+
+
+ tab.addEventListener(
+ "click",
+ ()=>{
+
+
+ el.tabs.forEach(t=>
+ t.classList.remove("active")
+ );
+
+
+ tab.classList.add("active");
+
+
+
+ activeFilter =
+ tab.dataset.filter;
+
+
+
+ render();
+
+
+ }
+
+ );
+
+
+});
+
+
+
+
+
+
+
+// Start Application 🚀
+
+render();
+
+startTimer();

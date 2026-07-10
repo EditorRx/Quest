@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission 180</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="app-shell">
+    <header class="topbar glass">
+      <div>
+        <h1>Mission 180</h1>
+        <p class="subtitle">Daily • Weekly • Monthly • Custom</p>
+      </div>
+      <button id="openAddBtn" class="btn btn-primary">+ Add Milestone</button>
+    </header>
+
+    <section class="stats glass">
+      <div class="stat">
+        <span id="totalCount">0</span>
+        <small>Total</small>
+      </div>
+      <div class="stat">
+        <span id="dailyCount">0</span>
+        <small>Daily</small>
+      </div>
+      <div class="stat">
+        <span id="weeklyCount">0</span>
+        <small>Weekly</small>
+      </div>
+      <div class="stat">
+        <span id="monthlyCount">0</span>
+        <small>Monthly</small>
+      </div>
+      <div class="stat">
+        <span id="customCount">0</span>
+        <small>Custom</small>
+      </div>
+    </section>
+
+    <nav class="tabs glass">
+      <button class="tab active" data-filter="all">Home</button>
+      <button class="tab" data-filter="daily">Daily</button>
+      <button class="tab" data-filter="weekly">Weekly</button>
+      <button class="tab" data-filter="monthly">Monthly</button>
+      <button class="tab" data-filter="custom">Custom</button>
+    </nav>
+
+    <main class="content glass">
+      <div class="section-head">
+        <h2 id="sectionTitle">Home</h2>
+        <p id="sectionHint">Select a category to view your milestones.</p>
+      </div>
+      <div id="milestoneList" class="list"></div>
+    </main>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+
+  <div id="addModal" class="modal hidden glass">
+    <div class="modal-head">
+      <h3>Add Milestone</h3>
+      <button id="closeAddBtn" class="icon-btn">✕</button>
+    </div>
+
+    <div id="stepChoose" class="modal-step">
+      <p>Choose category</p>
+      <div class="choose-grid">
+        <button class="choose-btn" data-category="daily">Daily</button>
+        <button class="choose-btn" data-category="weekly">Weekly</button>
+        <button class="choose-btn" data-category="monthly">Monthly</button>
+        <button class="choose-btn" data-category="custom">Custom</button>
+      </div>
+    </div>
+
+    <div id="stepForm" class="modal-step hidden">
+      <div class="selected-chip" id="selectedCategoryChip">Daily</div>
+
+      <label>Title</label>
+      <input id="titleInput" type="text" placeholder="Enter title" />
+
+      <label>Description <span class="muted">(optional)</span></label>
+      <textarea id="descInput" rows="3" placeholder="Write details"></textarea>
+
+      <div id="customDaysWrap" class="hidden">
+        <label>Custom days</label>
+        <input id="customDaysInput" type="number" min="1" placeholder="e.g. 180" />
+      </div>
+
+      <button id="saveBtn" class="btn btn-primary full">Save</button>
+      <button id="backBtn" class="btn btn-secondary full">Back</button>
+    </div>
+  </div>
+
+  <div id="popupBackdrop" class="modal-backdrop hidden"></div>
+
+  <div id="rewardPopup" class="popup glass hidden">
+    <h3>🎁 Reward</h3>
+    <p id="rewardText"></p>
+    <button id="rewardOkBtn" class="btn btn-primary full">OK</button>
+  </div>
+
+  <div id="punishPopup" class="popup glass hidden">
+    <h3>☠ Mission Failed</h3>
+    <p id="punishText"></p>
+    <button id="punishOkBtn" class="btn btn-primary full">Accept</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

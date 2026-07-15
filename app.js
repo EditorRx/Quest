@@ -449,7 +449,8 @@ function addMilestone(){
  ),
 
 
- status:"active"
+ status:"active",
+ missCount: 0
 
  };
 
@@ -567,28 +568,49 @@ function deleteMilestone(id){
  render();
 
 }
-function checkExpired(){
 
- const current = now();
+function checkExpired() {
+  const t = now();
 
+  let changed = false;
+  let punishText = null;
 
- const expired =
- milestones.filter(
- m=>m.dueAt <= current
- );
+  milestones = milestones
+    .map(m => {
 
+      if (m.dueAt > t) return m;
 
- if(!expired.length) return;
+      changed = true;
 
+      if (!punishText) {
+        punishText = randomFrom(punishments);
+      }
 
+      if (m.category === "daily") {
+        return {
+          ...m,
+          dueAt: nextDayEnd(),
+          missCount: (m.missCount || 0) + 1
+        };
+      }
 
- const failed = expired[0];
+      return null;
 
+    })
+    .filter(Boolean);
 
- milestones =
- milestones.filter(
- m=>m.id !== failed.id
- );
+  if (changed) {
+    saveData();
+    render();
+  }
+
+  if (punishText) {
+    openPopup(
+      "punish",
+      "☠ Mission Failed!\n\n" + punishText
+    );
+  }
+}
 
 
  saveData();
@@ -802,10 +824,11 @@ function render(){
  ${formatDue(item.dueAt)}
 
  </div>
-
-
-
-
+${item.category === "daily" && item.missCount > 0 ? `
+<div class="item-meta">
+⚠ Missed: ${item.missCount} day${item.missCount > 1 ? "s" : ""}
+</div>
+` : ""}
 
  <div class="card-actions">
 

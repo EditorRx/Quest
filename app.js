@@ -99,7 +99,6 @@ const el = {
   punishOkBtn:
   document.getElementById("punishOkBtn"),
 
-
   sectionTitle:
   document.getElementById("sectionTitle"),
 
@@ -206,7 +205,7 @@ function getRandomRewards(category){
 
  }
 
-  else{
+ else{
 
    // Weekly, Monthly, Custom = 1-3 rewards
    amount = Math.floor(Math.random()*3)+1;
@@ -226,8 +225,7 @@ function getRandomRewards(category){
      Math.random()*list.length
    );
 
-
-   selected.push(list[index]);
+  selected.push(list[index]);
 
 
    list.splice(index,1);
@@ -323,7 +321,7 @@ function closeModal(){
 
  el.stepChoose.classList.remove("hidden");
 
- el.stepForm.classList.add("hidden");
+el.stepForm.classList.add("hidden");
 
 
  el.titleInput.value="";
@@ -447,9 +445,7 @@ function addMilestone(){
  selectedCategory,
  customDays
  ),
-
-
- status:"active",
+   status:"active",
  missCount: 0
 
  };
@@ -461,7 +457,8 @@ function addMilestone(){
 
  saveData();
 
-  render();
+
+ render();
 
 
  closeModal();
@@ -568,6 +565,12 @@ function deleteMilestone(id){
  render();
 
 }
+function nextDayEnd() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(23, 59, 59, 999);
+  return d.getTime();
+}
 
 function checkExpired() {
   const t = now();
@@ -611,25 +614,6 @@ function checkExpired() {
     );
   }
 }
-
-
- saveData();
-
-
- render();
-
-
- openPopup(
- "punish",
- "☠ Mission Failed\n\n"+
- getRandomPunishment()
- );
-
-}
-
-
-
-
 function renderStats(){
 
 
@@ -669,8 +653,9 @@ function renderStats(){
 
 
 function filteredData(){
-  
-  if(activeFilter==="all")
+
+
+ if(activeFilter==="all")
 
  return milestones;
 
@@ -751,9 +736,7 @@ function render(){
 
 
  if(!data.length){
-
-
- el.milestoneList.innerHTML =
+   el.milestoneList.innerHTML =
  `<div class="empty">
  No milestones yet.
  </div>`;
@@ -824,11 +807,13 @@ function render(){
  ${formatDue(item.dueAt)}
 
  </div>
+
 ${item.category === "daily" && item.missCount > 0 ? `
 <div class="item-meta">
 ⚠ Missed: ${item.missCount} day${item.missCount > 1 ? "s" : ""}
 </div>
 ` : ""}
+
 
  <div class="card-actions">
 
@@ -847,7 +832,7 @@ ${item.category === "daily" && item.missCount > 0 ? `
  class="small-btn delete"
  data-delete="${item.id}">
 
-Delete
+ Delete
 
  </button>
 
@@ -918,8 +903,7 @@ function startTimer(){
 
  checkExpired();
 
-
- setInterval(
+  setInterval(
  checkExpired,
  60000
  );
@@ -1020,6 +1004,13 @@ document
 
 });
 
+
+
+
+
+
+
+
 el.tabs.forEach(tab=>{
 
 
@@ -1063,3 +1054,5 @@ el.tabs.forEach(tab=>{
 render();
 
 startTimer();
+  
+   

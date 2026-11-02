@@ -2,285 +2,332 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image → Digital Code Flow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flowing Code Image Art</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  :root {
+    --bg: #05060a;
+    --panel: #101420;
+    --accent: #00ffd5;
+    --text: #d7e0ea;
   }
 
+  * { box-sizing: border-box; }
+
   body {
-    background: #0a0a0f;
-    color: #e0e0e0;
-    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
     min-height: 100vh;
+    background: radial-gradient(circle at 20% 20%, #0b1220 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 24px;
   }
 
   h1 {
-    font-size: 1.8rem;
-    margin-bottom: 8px;
-    background: linear-gradient(90deg, #00ff9d, #00c3ff, #ff00e5);
+    margin: 0 0 6px;
+    font-size: clamp(22px, 4vw, 34px);
+    background: linear-gradient(90deg, #00ffd5, #7b5cff, #ff4fd8);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
+    background-clip: text;
+    color: transparent;
   }
 
-  .subtitle {
-    color: #888;
-    font-size: 0.95rem;
-    margin-bottom: 25px;
+  p.subtitle {
+    margin: 0 0 18px;
+    opacity: .75;
     text-align: center;
+    font-size: 14px;
   }
 
   .controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
+    gap: 10px;
     justify-content: center;
-    margin-bottom: 25px;
-    background: #12121a;
-    padding: 18px 25px;
-    border-radius: 12px;
-    border: 1px solid #2a2a3a;
+    align-items: center;
+    background: rgba(16, 20, 32, .8);
+    border: 1px solid rgba(0, 255, 213, .18);
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 18px;
   }
 
-  label {
-    font-size: 0.9rem;
-    color: #aaa;
+  input[type="file"] { display: none; }
+
+  button, label.btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #04121a;
+    background: linear-gradient(135deg, #00ffd5, #4ce0ff);
+    transition: transform .15s ease, filter .15s ease;
   }
 
-  input[type="file"] {
-    color: #ccc;
-    font-size: 0.9rem;
+  button:hover, label.btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+  }
+
+  button.secondary {
+    color: var(--text);
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+  }
+
+  .slider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
   }
 
   input[type="range"] {
-    width: 120px;
-    accent-color: #00ff9d;
+    accent-color: var(--accent);
+    width: 130px;
   }
 
-  button {
-    background: linear-gradient(90deg, #00c853, #00b0ff);
-    color: #000;
-    border: none;
-    padding: 10px 22px;
-    border-radius: 6px;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.15s, opacity 0.15s;
-  }
-
-  button:hover {
-    transform: scale(1.05);
-  }
-
-  button:active {
-    transform: scale(0.97);
-  }
-
-  #canvasContainer {
-    position: relative;
-    background: #050508;
-    border: 1px solid #1e1e2e;
-    border-radius: 10px;
+  .canvas-wrap {
+    width: min(1100px, 96vw);
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 0 40px rgba(0, 255, 157, 0.08);
+    border: 1px solid rgba(0,255,213,.2);
+    background: #000;
+    box-shadow: 0 20px 60px rgba(0,0,0,.55);
   }
 
   canvas {
     display: block;
-    max-width: 100%;
+    width: 100%;
+    height: auto;
   }
 
   .hint {
-    margin-top: 18px;
-    color: #666;
-    font-size: 0.85rem;
+    margin-top: 12px;
+    font-size: 12px;
+    opacity: .6;
     text-align: center;
   }
 </style>
 </head>
 <body>
 
-  <h1>IMAGE → DIGITAL CODE FLOW</h1>
-  <p class="subtitle">Upload any image • Watch it transform into flowing colored code</p>
+  <h1>Flowing Code Image Art</h1>
+  <p class="subtitle">Upload any image — it becomes animated, colorful code characters in the image’s own colors.</p>
 
   <div class="controls">
-    <div>
-      <label>Select Image</label><br>
-      <input type="file" id="imageInput" accept="image/*">
+    <label class="btn" for="imageInput">Choose Image</label>
+    <input id="imageInput" type="file" accept="image/*">
+
+    <div class="slider">
+      <span>Detail</span>
+      <input id="detail" type="range" min="3" max="18" value="8">
+      <span id="detailValue">8</span>
     </div>
 
-    <div>
-      <label>Density</label><br>
-      <input type="range" id="density" min="4" max="16" value="9">
+    <div class="slider">
+      <span>Flow Speed</span>
+      <input id="speed" type="range" min="0" max="10" value="4">
+      <span id="speedValue">4</span>
     </div>
 
-    <div>
-      <label>Speed</label><br>
-      <input type="range" id="speed" min="1" max="20" value="8">
-    </div>
-
-    <button id="startBtn">Start Effect</button>
+    <button id="pauseBtn" class="secondary">Pause</button>
+    <button id="downloadBtn" class="secondary">Download PNG</button>
   </div>
 
-  <div id="canvasContainer">
-    <canvas id="canvas"></canvas>
+  <div class="canvas-wrap">
+    <canvas id="artCanvas"></canvas>
   </div>
 
-  <p class="hint">Tip: Higher density = more detail • Lower density = bigger characters</p>
+  <p class="hint">Tip: increase <b>Detail</b> for sharper images; decrease it for larger, more visible code characters.</p>
 
 <script>
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  const imageInput = document.getElementById('imageInput');
-  const densitySlider = document.getElementById('density');
-  const speedSlider = document.getElementById('speed');
-  const startBtn = document.getElementById('startBtn');
+const imageInput = document.getElementById("imageInput");
+const detailSlider = document.getElementById("detail");
+const speedSlider = document.getElementById("speed");
+const detailValue = document.getElementById("detailValue");
+const speedValue = document.getElementById("speedValue");
+const pauseBtn = document.getElementById("pauseBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const canvas = document.getElementById("artCanvas");
+const ctx = canvas.getContext("2d");
 
-  let img = null;
-  let animationId = null;
-  let columns = [];
-  let fontSize = 9;
-  let chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン{}[]();=<>+-*/&|!\~%$#@";
+const CODE_CHARS = "01{}[]<>/*=+-#$%&@!?;:~^|ABCDEF";
+let sourceImage = null;
+let pixels = [];
+let cellSize = 8;
+let animationSpeed = 4;
+let running = true;
+let time = 0;
 
-  // Load image
-  imageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+// Load selected image
+imageInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      img = new Image();
-      img.onload = () => {
-        // Limit max size for performance
-        const maxW = 900;
-        const maxH = 700;
-        let w = img.width;
-        let h = img.height;
-
-        if (w > maxW) {
-          h = Math.round(h * (maxW / w));
-          w = maxW;
-        }
-        if (h > maxH) {
-          w = Math.round(w * (maxH / h));
-          h = maxH;
-        }
-
-        canvas.width = w;
-        canvas.height = h;
-        cancelAnimationFrame(animationId);
-      };
-      img.src = event.target.result;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      sourceImage = img;
+      buildPixelData();
     };
-    reader.readAsDataURL(file);
-  });
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
 
-  startBtn.addEventListener('click', () => {
-    if (!img) {
-      alert("Please select an image first!");
-      return;
-    }
-    startEffect();
-  });
+// Read image pixels and store exact RGB colors
+function buildPixelData() {
+  const maxCanvasWidth = Math.min(1200, window.innerWidth * 0.95);
+  const scale = Math.min(1, maxCanvasWidth / sourceImage.width);
 
-  function startEffect() {
-    cancelAnimationFrame(animationId);
+  const width = Math.max(1, Math.floor(sourceImage.width * scale));
+  const height = Math.max(1, Math.floor(sourceImage.height * scale));
 
-    fontSize = parseInt(densitySlider.value);
-    const cols = Math.floor(canvas.width / fontSize);
-    const rows = Math.floor(canvas.height / fontSize);
+  const sampleCanvas = document.createElement("canvas");
+  sampleCanvas.width = width;
+  sampleCanvas.height = height;
 
-    // Sample the image colors
-    const offscreen = document.createElement('canvas');
-    offscreen.width = cols;
-    offscreen.height = rows;
-    const octx = offscreen.getContext('2d');
-    octx.drawImage(img, 0, 0, cols, rows);
-    const imageData = octx.getImageData(0, 0, cols, rows).data;
+  const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+  sampleCtx.drawImage(sourceImage, 0, 0, width, height);
 
-    // Create columns (matrix style)
-    columns = [];
-    for (let i = 0; i < cols; i++) {
-      columns.push({
-        y: Math.random() * rows,
-        speed: 0.3 + Math.random() * 1.5,
-        chars: []
+  const imageData = sampleCtx.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  pixels = [];
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const index = (y * width + x) * 4;
+      const r = data[index];
+      const g = data[index + 1];
+      const b = data[index + 2];
+      const a = data[index + 3];
+
+      pixels.push({
+        x,
+        y,
+        r,
+        g,
+        b,
+        a
       });
-
-      // Pre-fill characters for this column
-      for (let j = 0; j < rows + 20; j++) {
-        columns[i].chars.push(chars[Math.floor(Math.random() * chars.length)]);
-      }
     }
-
-    function draw() {
-      // Slight trail effect
-      ctx.fillStyle = 'rgba(5, 5, 10, 0.25)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.font = `${fontSize}px 'Share Tech Mono', monospace`;
-      ctx.textAlign = 'center';
-
-      const speedMult = parseInt(speedSlider.value) / 8;
-
-      for (let i = 0; i < columns.length; i++) {
-        const col = columns[i];
-        col.y += col.speed * speedMult;
-
-        // Reset when it goes far enough
-        if (col.y > rows + 30) {
-          col.y = -Math.random() * 40;
-          col.speed = 0.3 + Math.random() * 1.8;
-        }
-
-        for (let j = 0; j < rows + 15; j++) {
-          const yPos = Math.floor(col.y - j);
-          if (yPos < 0 || yPos >= rows) continue;
-
-          // Get original pixel color
-          const idx = (yPos * cols + i) * 4;
-          const r = imageData[idx];
-          const g = imageData[idx + 1];
-          const b = imageData[idx + 2];
-          const a = imageData[idx + 3];
-
-          if (a < 30) continue; // skip almost transparent
-
-          // Brightness boost for the leading character
-          const brightness = j === 0 ? 1.4 : 1 - (j * 0.07);
-          const finalR = Math.min(255, Math.floor(r * brightness));
-          const finalG = Math.min(255, Math.floor(g * brightness));
-          const finalB = Math.min(255, Math.floor(b * brightness));
-
-          ctx.fillStyle = `rgb(\( {finalR}, \){finalG},${finalB})`;
-
-          // Occasionally change the character for "flowing" feel
-          if (Math.random() < 0.03) {
-            col.chars[j] = chars[Math.floor(Math.random() * chars.length)];
-          }
-
-          const char = col.chars[j] || chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(char, i * fontSize + fontSize / 2, yPos * fontSize + fontSize);
-        }
-      }
-
-      animationId = requestAnimationFrame(draw);
-    }
-
-    draw();
   }
+
+  canvas.width = width;
+  canvas.height = height;
+
+  cellSize = Number(detailSlider.value);
+  time = 0;
+}
+
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (!sourceImage || !pixels.length) {
+    drawWelcomeScreen();
+    return;
+  }
+
+  if (!running) return;
+
+  time += animationSpeed * 0.02;
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = `${cellSize}px "Courier New", monospace`;
+  ctx.textBaseline = "top";
+
+  const columns = Math.ceil(canvas.width / cellSize);
+  const rows = Math.ceil(canvas.height / cellSize);
+
+  for (let gy = 0; gy < rows; gy++) {
+    for (let gx = 0; gx < columns; gx++) {
+      const px = Math.min(pixels.length - 1, gy * columns + gx);
+      const pixel = pixels[px];
+
+      if (!pixel || pixel.a < 20) continue;
+
+      // Flowing brightness effect
+      const wave =
+        Math.sin(pixel.x * 0.12 + time) *
+        Math.cos(pixel.y * 0.12 - time);
+
+      const brightness = 0.72 + wave * 0.28;
+
+      const r = Math.min(255, Math.max(0, Math.round(pixel.r * brightness)));
+      const g = Math.min(255, Math.max(0, Math.round(pixel.g * brightness)));
+      const b = Math.min(255, Math.max(0, Math.round(pixel.b * brightness)));
+
+      // Character changes smoothly over time
+      const charIndex =
+        Math.floor(
+          Math.abs(
+            Math.sin(pixel.x * 0.08 + pixel.y * 0.08 + time)
+          ) * CODE_CHARS.length
+        ) % CODE_CHARS.length;
+
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      ctx.fillText(CODE_CHARS[charIndex], gx * cellSize, gy * cellSize);
+    }
+  }
+}
+
+function drawWelcomeScreen() {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#00ffd5";
+  ctx.font = "22px monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("Choose an image to begin", canvas.width / 2, canvas.height / 2);
+  ctx.textAlign = "left";
+}
+
+// Controls
+detailSlider.addEventListener("input", () => {
+  detailValue.textContent = detailSlider.value;
+  cellSize = Number(detailSlider.value);
+});
+
+speedSlider.addEventListener("input", () => {
+  speedValue.textContent = speedSlider.value;
+  animationSpeed = Number(speedSlider.value);
+});
+
+pauseBtn.addEventListener("click", () => {
+  running = !running;
+  pauseBtn.textContent = running ? "Pause" : "Play";
+});
+
+downloadBtn.addEventListener("click", () => {
+  if (!sourceImage) return;
+
+  const link = document.createElement("a");
+  link.download = "flowing-code-art.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+});
+
+window.addEventListener("resize", () => {
+  if (sourceImage) buildPixelData();
+});
+
+// Set initial canvas size
+canvas.width = 900;
+canvas.height = 550;
+
+animate();
 </script>
+
 </body>
 </html>
